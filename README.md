@@ -4,6 +4,12 @@
 
 ## 核心模块
 
+### DataUploader - 数据上传
+- **JSON文件上传**: 支持文件和文本上传
+- **数据验证**: 格式验证和必需字段检查
+- **批量导入**: 事务安全的批量插入
+- **上传统计**: 详细的上传统计信息
+
 ### DataExporter - 数据导出
 - **多格式导出**: CSV、JSON、Excel
 - **灵活筛选**: 状态、标注员、结果筛选
@@ -20,6 +26,20 @@
 ### 安装依赖
 ```bash
 pip install flask openpyxl  # openpyxl为可选，用于Excel导出
+```
+
+### 数据上传
+```python
+from DataUploader import DataUploader
+
+uploader = DataUploader('users.db')
+
+# 从文本上传
+json_data = '[{"问题": "测试问题", "答案": "测试答案"}]'
+result = uploader.upload_from_text(json_data, 'user123')
+
+# 从文件上传
+result = uploader.upload_from_file(file_obj, 'user123')
 ```
 
 ### 数据导出
@@ -54,6 +74,13 @@ backup = manager.backup_data_before_delete()
 
 ## 主要功能
 
+### 数据上传功能
+- **JSON格式**: 支持标准JSON数组格式
+- **必需字段**: 问题、答案为必填项
+- **支持字段**: 中英文问题答案、学科分类、线索信息等
+- **文件上传**: 支持.json文件上传
+- **批量处理**: 事务安全的批量数据插入
+
 ### 导出筛选选项
 - **状态**: `all`, `pending`, `first_completed`, `completed`
 - **标注员**: `all` 或具体用户名
@@ -66,7 +93,28 @@ backup = manager.backup_data_before_delete()
 - **数据备份**: JSON格式自动备份
 - **统计分析**: 多维度数据统计
 
-## 数据字段
+## 数据格式
+
+### JSON上传格式
+```json
+[
+  {
+    "问题": "这是一个中文问题",
+    "答案": "这是对应的中文答案",
+    "问题（英语）": "This is an English question",
+    "答案（英语）": "This is the corresponding English answer",
+    "问题学科": "数学",
+    "clue_urls": ["http://example.com"],
+    "traces": ["推理步骤1", "推理步骤2"],
+    "answer_clue": "答案线索",
+    "answer_url": "http://answer.com",
+    "check_info": {"quality": "high"},
+    "dfsw": {"status": "verified"}
+  }
+]
+```
+
+### 数据库字段
 
 | 字段 | 说明 |
 |------|------|
