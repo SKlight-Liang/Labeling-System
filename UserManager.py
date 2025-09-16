@@ -115,18 +115,17 @@ class UserManager:
         ''', (username, seven_days_ago, username, seven_days_ago))
         recent_annotations = cursor.fetchone()[0]
         
-        # 各类标注结果统计
+        # 各类标注结果统计 - 修复双倍计算问题
         cursor.execute('''
             SELECT 
-                SUM(CASE WHEN first_annotation_result = 'good' THEN 1 ELSE 0 END) +
-                SUM(CASE WHEN second_annotation_result = 'good' THEN 1 ELSE 0 END) as good_count,
-                SUM(CASE WHEN first_annotation_result = 'bad' THEN 1 ELSE 0 END) +
-                SUM(CASE WHEN second_annotation_result = 'bad' THEN 1 ELSE 0 END) as bad_count,
-                SUM(CASE WHEN first_annotation_result = 'uncertain' THEN 1 ELSE 0 END) +
-                SUM(CASE WHEN second_annotation_result = 'uncertain' THEN 1 ELSE 0 END) as uncertain_count
-            FROM qa_data 
-            WHERE first_annotator = ? OR second_annotator = ?
-        ''', (username, username))
+                SUM(CASE WHEN first_annotator = ? AND first_annotation_result = 'good' THEN 1 ELSE 0 END) +
+                SUM(CASE WHEN second_annotator = ? AND second_annotation_result = 'good' THEN 1 ELSE 0 END) as good_count,
+                SUM(CASE WHEN first_annotator = ? AND first_annotation_result = 'bad' THEN 1 ELSE 0 END) +
+                SUM(CASE WHEN second_annotator = ? AND second_annotation_result = 'bad' THEN 1 ELSE 0 END) as bad_count,
+                SUM(CASE WHEN first_annotator = ? AND first_annotation_result = 'uncertain' THEN 1 ELSE 0 END) +
+                SUM(CASE WHEN second_annotator = ? AND second_annotation_result = 'uncertain' THEN 1 ELSE 0 END) as uncertain_count
+            FROM qa_data
+        ''', (username, username, username, username, username, username))
         annotation_result_stats = cursor.fetchone()
         
         return {

@@ -3,6 +3,7 @@
 一个完整的问答数据标注、管理和导出系统，支持双重标注、数据统计和多格式导出。
 
 标注系统的整体架构图如下：
+
 ![系统架构图](./img/SystemArchitecture.png)
 
 ## 核心模块
@@ -12,6 +13,31 @@
 - **数据验证**: 格式验证和必需字段检查
 - **批量导入**: 事务安全的批量插入
 - **上传统计**: 详细的上传统计信息
+
+### DataDistributor - 数据分发
+- **智能分配**: 自动分配待标注数据
+- **双重标注**: 支持第一次和第二次标注流程
+- **缓冲池管理**: 防止数据冲突的分配机制
+- **状态追踪**: 实时监控数据分配状态
+
+该模块的核心流程如下：
+
+![数据分发流程图](./img/DataDistributor.png)
+
+不过这种设计存在许多潜在问题，因此在后续的开发版本中被弃用。典型问题包括：
+1. **全局锁竞争严重**
+   - 所有用户共享一个数据库锁
+   - 高并发时性能急剧下降
+   - 容易出现死锁和饥饿现象
+
+2. **缓冲池管理复杂**
+   - 全局缓冲池状态维护困难
+   - 数据一致性难以保证
+   - 过期数据清理效率低
+
+3. **资源利用率低**
+   - 锁粒度过大，并发性差
+   - CPU和内存利用率不均
 
 ### DataExporter - 数据导出
 - **多格式导出**: CSV、JSON、Excel
@@ -49,6 +75,22 @@ result = uploader.upload_from_text(json_data, 'user123')
 
 # 从文件上传
 result = uploader.upload_from_file(file_obj, 'user123')
+```
+
+### 数据分发
+```python
+from DataDistributor import DataDistributor
+
+distributor = DataDistributor('users.db')
+
+# 获取待标注数据
+data = distributor.get_qa_data_for_annotation('user123')
+
+# 保存标注结果
+success = distributor.save_annotation(data_id, 'user123', 'good')
+
+# 获取用户统计
+stats = distributor.get_user_annotation_stats('user123')
 ```
 
 ### 用户管理
@@ -95,6 +137,13 @@ backup = manager.backup_data_before_delete()
 ```
 
 ## 主要功能
+
+### 数据分发功能
+- **智能分配**: 自动分配待标注数据，避免冲突
+- **双重标注**: 完整的第一次和第二次标注流程
+- **缓冲池机制**: 防止多用户同时标注同一数据
+- **超时管理**: 自动清理过期的数据分配
+- **一致性检查**: 自动判断两次标注结果一致性
 
 ### 用户管理功能
 - **用户统计**: 标注数量、质量评估

@@ -1,17 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-数据上传库 (Data Uploader Library)
-用于处理QA数据的上传和批量导入操作
-
-主要功能:
-1. JSON数据验证和解析
-2. 批量数据插入到数据库
-3. 文件上传处理
-4. 数据格式转换和验证
-5. 上传统计和错误处理
-"""
-
 import json
 import sqlite3
 import os
@@ -51,7 +37,7 @@ class DataUploader:
         }
         
         # 必需字段
-        self.required_fields = ['问题', '答案']
+        # self.required_fields = ['问题', '答案']
         
         # JSON字段（需要序列化存储的字段）
         self.json_fields = ['clue_urls', 'traces', 'check_info', 'dfsw']
@@ -86,9 +72,9 @@ class DataUploader:
                     return False, f"第{i+1}条数据格式错误：应该是一个对象"
                 
                 # 检查必需字段
-                for required_field in self.required_fields:
-                    if required_field not in item or not item[required_field]:
-                        return False, f"第{i+1}条数据缺少必需字段: {required_field}"
+                # for required_field in self.required_fields:
+                #     if required_field not in item or not item[required_field]:
+                #         return False, f"第{i+1}条数据缺少必需字段: {required_field}"
             
             return True, ""
             
@@ -483,7 +469,7 @@ class DataUploader:
             ]
             
             missing_columns = [col for col in required_columns if col not in columns]
-            if missing_columns:
+            if len(missing_columns):
                 conn.close()
                 return False, f"缺少必需字段: {', '.join(missing_columns)}"
             

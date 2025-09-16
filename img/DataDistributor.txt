@@ -1,0 +1,25 @@
+flowchart TD
+    A[Requests data] --> B[Global database lock]
+    B --> C[Query pending allocation]
+    C --> D[Check the buffer pool]
+    D --> E[Update allocation record]
+    E --> F[Release database lock]
+    F --> G[Return data]
+    
+    H[Cleanup task] --> I[Global database lock]
+    I --> J[Clean up expired allocations]
+    J --> K[Update the buffer pool]
+    K --> L[Release database lock]
+    
+    M[Label submission] --> N[Global database lock]
+    N --> O[Verify allocation status]
+    O --> P[Update annotation results]
+    P --> Q[Dual annotation logic]
+    Q --> R[Release database lock]
+    
+    style B fill:#ffcdd2
+    style F fill:#ffcdd2
+    style I fill:#ffcdd2
+    style L fill:#ffcdd2
+    style N fill:#ffcdd2
+    style R fill:#ffcdd2

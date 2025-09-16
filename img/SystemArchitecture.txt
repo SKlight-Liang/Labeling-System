@@ -1,0 +1,46 @@
+flowchart TB
+    subgraph "User Interface Layer"
+        A[User login page] --> B[User type check]
+        B --> C[Admin]
+        B --> D[Manager] 
+        B --> E[User]
+    end
+    
+    subgraph "Core Business Layer"
+        C --> F[Admin Panel]
+        D --> G[Data processing page]
+        E --> H[Labeling interface]
+        
+        F --> I[Data upload]
+        F --> J[User Management]
+        F --> K[View statistics]
+        
+        G --> L[Conflict data processing]
+        G --> M[Data auditing]
+        
+        H --> N[Obtain annotated data]
+        H --> O[Submit annotation results]
+        H --> P[View statistical information]
+    end
+    
+    subgraph "Data distribution layer"
+        N --> Q[Lightweight data distributor]
+        O --> Q
+        L --> R[Direct database operation]
+        M --> R
+        I --> S[Data upload manager]
+    end
+    
+    subgraph "Data storage layer"
+        Q --> T[SQLite]
+        R --> T
+        S --> T
+        T --> U[users]
+        T --> V[qa_data]
+        T --> W[admins.json]
+        T --> X[manager.json]
+    end
+    
+    style Q fill:#e1f5fe
+    style T fill:#f3e5f5
+    style H fill:#e8f5e8
