@@ -56,6 +56,12 @@
 - **一致性统计**: 标注质量和一致性评估
 - **工作记录**: 最近标注历史追踪
 
+### AsyncResultManager - 异步结果管理
+- **异步任务管理**: 存储和管理异步处理结果
+- **请求频率限制**: 防止用户过度请求的频率控制
+- **结果缓存**: 提高响应速度的智能缓存机制
+- **统计监控**: 详细的请求和缓存统计信息
+
 ## 快速开始
 
 ### 安装依赖
@@ -106,6 +112,23 @@ user_info = user_manager.get_user_detail_info(user_id=1)
 basic_info = user_manager.get_user_basic_by_id(user_id=1)
 ```
 
+### 异步结果管理
+```python
+from AsyncResultManager import async_result_manager
+
+# 检查请求频率限制
+is_allowed, remaining, reset_time = async_result_manager.check_request_rate_limit('user123')
+
+# 存储异步处理结果
+async_result_manager.store_result('task_001', 'user123', 'completed', {'data': 'result'})
+
+# 获取处理结果
+result = async_result_manager.get_result('task_001', 'user123')
+
+# 获取统计信息
+stats = async_result_manager.get_stats()
+```
+
 ### 数据导出
 ```python
 from DataExporter import DataExporter
@@ -137,6 +160,13 @@ backup = manager.backup_data_before_delete()
 ```
 
 ## 主要功能
+
+### 异步结果管理功能
+- **任务状态跟踪**: 完整的异步任务生命周期管理
+- **频率限制**: 每分钟请求次数限制，防止系统过载
+- **智能缓存**: 结果缓存机制，提升响应性能
+- **自动清理**: 过期结果和缓存的自动清理
+- **权限控制**: 基于用户的结果访问权限管理
 
 ### 数据分发功能
 - **智能分配**: 自动分配待标注数据，避免冲突
