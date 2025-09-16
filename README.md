@@ -2,6 +2,9 @@
 
 一个完整的问答数据标注、管理和导出系统，支持双重标注、数据统计和多格式导出。
 
+标注系统的整体架构图如下：
+![系统架构图](./img/SystemArchitecture.png)
+
 ## 核心模块
 
 ### DataUploader - 数据上传
@@ -20,6 +23,12 @@
 - **数据清空**: 安全的全量清空
 - **数据统计**: 详细的统计信息
 - **数据备份**: 删除前自动备份
+
+### UserManager - 用户管理
+- **用户详情**: 完整的用户信息和统计
+- **活跃度分析**: 标注频率和时间分布
+- **一致性统计**: 标注质量和一致性评估
+- **工作记录**: 最近标注历史追踪
 
 ## 快速开始
 
@@ -40,6 +49,19 @@ result = uploader.upload_from_text(json_data, 'user123')
 
 # 从文件上传
 result = uploader.upload_from_file(file_obj, 'user123')
+```
+
+### 用户管理
+```python
+from UserManager import UserManager
+
+user_manager = UserManager('users.db')
+
+# 获取用户详细信息
+user_info = user_manager.get_user_detail_info(user_id=1)
+
+# 获取用户基本信息
+basic_info = user_manager.get_user_basic_by_id(user_id=1)
 ```
 
 ### 数据导出
@@ -73,6 +95,13 @@ backup = manager.backup_data_before_delete()
 ```
 
 ## 主要功能
+
+### 用户管理功能
+- **用户统计**: 标注数量、质量评估
+- **活跃度监控**: 日均标注量和时间分布
+- **一致性分析**: 标注一致性评估
+- **在线状态**: 实时用户状态监控
+- **工作历史**: 详细的标注记录追踪
 
 ### 数据上传功能
 - **JSON格式**: 支持标准JSON数组格式
